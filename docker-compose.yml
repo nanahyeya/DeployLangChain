@@ -7,6 +7,7 @@ services:
       # 환경변수를 직접 설정하거나 .env 파일 사용
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}  # OpenAI API 키 설정
       # OpenAI API 키는 .env 파일이나 직접 설정
     env_file:
       - .env  # .env 파일이 있는 경우
