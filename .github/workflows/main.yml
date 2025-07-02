@@ -1,0 +1,78 @@
+name: Build and Push PDF RAG Docker Image (Simple)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: pdf-rag-app
+  DOCKER_TAG: 0.1
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run Tests
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Install dependencies
+        run: poetry install --only=main
+      
+      - name: Run basic syntax check
+        run: |
+          poetry run python -m py_compile src/main.py
+          poetry run python -m py_compile src/rag_service.py
+          poetry run python -m py_compile src/ui_interface.py
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+    name: Build and Push Docker Image
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      # Docker Hub 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      # Docker 이미지 빌드 및 푸시 (단순화된 태그)
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          
+      # 빌드 결과 출력
+      - name: Build Success
+        run: |
+          echo " Image pushed successfully!"
+          echo " Images:"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:latest"
+          echo " Run with:"
+          echo "  docker run -p 7860:7860 -e OPENAI_API_KEY=your-key ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}"
