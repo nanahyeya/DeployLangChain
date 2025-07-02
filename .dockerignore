@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Poetry (poetry.lock이 없으므로 제외하지 않음)
+poetry.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Documentation
+README.md
+docs/
+
+# Tests
+tests/
+test_*
+*_test.py
+
+# 환경 파일 (보안상 제외, 실행시 별도 제공)
+.env
+
+# 업로드 파일들
+uploads/
+*.pdf
+
+# 기타 개발 파일들
+.gitignore
+.git/
