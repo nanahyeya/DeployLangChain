@@ -14,7 +14,7 @@ def detect_docker_environment():
     """Docker 환경 감지"""
     try:
         hostname = socket.gethostname()
-        is_docker = os.path.exists('/.dockerenv') or hostname.startswith('pdf-rag-app')
+        is_docker = os.path.exists('/.dockerenv') or hostname.startswith('pdf-rag-container')
         return is_docker
     except:
         return False
